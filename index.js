@@ -26,17 +26,35 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/api/2015-12-25", function (req, res) {
-  const date = new Date();
-  const timestamp = date.getTime();
-  res.json({"unix":timestamp , "utc":date});
+
+
+app.get("/api/hello", function(req, res) {
+  res.json({ greeting: 'hello API' });
 });
 
-app.get("/api/1451001600000", function (req, res) {
-  const date = new Date();
-  const timestamp = date.getTime();
-  res.json({"unix":timestamp , "utc":date});
+app.get("/api", function(req, res) {
+  let date = new Date
+  res.json({ unix: date.valueOf(), utc: date.toUTCString() });
 });
+
+app.get("/api/:date_string", (req, res) => {
+  let dateString = req.params.date_string || '';
+  let date;
+  date = dateString ? new Date(dateString) : new Date();
+
+  if (/\d{5,}/.test(dateString)) {
+    let dateInt = parseInt(dateString);
+    res.send({ unix: dateInt, utc: new Date(dateInt).toUTCString() });
+  } else {
+    if (date.toString() === "Invalid Date") {
+      res.json({ error: "Invalid Date" });
+    } else {
+      res.json({ unix: date.valueOf(), utc: date.toUTCString() });
+    }
+  }
+});
+
+
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
